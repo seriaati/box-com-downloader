@@ -1,2 +1,0 @@
-PyVirtualDisplay==0.2.1
-selenium==3.14.0

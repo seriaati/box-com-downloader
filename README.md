@@ -1,32 +1,29 @@
-# Box.com PDF Downloader
+# box-pdf-downloader
 
-This repo is a fork of razocrackers' [box.com-downloader](https://github.com/razorcrackers/box.com-downloader), containing fixes that allow it to work with the latest version of box.com.
+This repo is a fork of razocrackers' [box.com-downloader](https://github.com/razorcrackers/box.com-downloader), containing fixes that allow it to work with the latest version of box.com and the latest version of Selenium. I also packaged it as a pip-installable tool for easier installation and usage.
 
-This application can scrape and download protected pdf files in box.com and save it as an editable PDF file.
+This application can scrape and download protected docx or pdf files in box.com and save it as an editable PDF file.
 
-### Installation
+## Installation
 
-This app requires [Python](https://python.org/) 3 to run.
-
-Clone the repository and install the dependencies.
+Any Python package manager can be used to install this tool. Here are some examples:
 
 ```sh
-git clone https://github.com/lfasmpao/box.com-downloader
-cd box.com-downloader
-pip install -r requirements.txt
-python main.py -h
+uv tool install box-pdf-downloader
+
+pipx install box-pdf-downloader
+
+pip install box-pdf-downloader
 ```
 
-Note: This requires chrome selenium driver in order to work, you can download and install it from [here](http://chromedriver.chromium.org/downloads)
+## Example Usage
 
-### Example Usage
+Use either the `box-pdf-downloader` command or its shorter `bpd` alias:
 
 ```sh
-cd box.com-downloader
-python main.py https://app.box.com/s/hs5de51wub2htrcl0hxn1wir4zpmf3wj
+box-pdf-downloader https://app.box.com/s/hs5de51wub2htrcl0hxn1wir4zpmf3wj
+
+bpd https://app.box.com/s/hs5de51wub2htrcl0hxn1wir4zpmf3wj
 ```
 
-License
-----
-
-GNU General Public License v3.0
+The PDF is saved to `dl_files/` in the current directory.

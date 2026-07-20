@@ -16,8 +16,8 @@
 import argparse
 import os
 
-from downloader import download_file
-from scraper import Scraper, url_checker
+from .downloader import download_file
+from .scraper import Scraper, url_checker
 
 # globals
 parser = argparse.ArgumentParser(usage='%(prog)s [options]')
@@ -29,12 +29,12 @@ parser.add_argument('--wait-time', default=15, dest='wait_time',
 parser.add_argument('--use-x11', default=False, action='store_false', dest='use_x11',
                     help='Use X11 Virtual Display (For OSX/Linux Only)')
 parser.add_argument('--version', action='version', version='Box.com PDF Downloader Version 1.0')
-parser.add_argument('--out', default=os.path.dirname(os.path.abspath(__file__)) + "/dl_files/",
+parser.add_argument('--out', default=os.getcwd() + "/dl_files/",
                     dest="output_location", type=str, help="Output file folder location")
-args = parser.parse_args()
 
 
 def main():
+    args = parser.parse_args()
     style = "=+" * 20
     if url_checker(args.url) is False:  # url format check
         raise argparse.ArgumentTypeError('Value has to be in full url format http:// or http://')

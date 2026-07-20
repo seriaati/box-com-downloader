@@ -1,5 +1,5 @@
 [project]
-name = "box-com-downloader"
+name = "box-pdf-downloader"
 version = "0.1.0"
 description = "Download protected PDF files from box.com"
 readme = "README.md"
@@ -7,4 +7,16 @@ requires-python = ">=3.11"
 dependencies = [
     "pyvirtualdisplay>=3.0",
     "selenium>=4.46.0",
+    "urllib3>=2.0",
 ]
+
+[project.scripts]
+box-pdf-downloader = "box_pdf_downloader.main:main"
+bpd = "box_pdf_downloader.main:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["box_pdf_downloader"]

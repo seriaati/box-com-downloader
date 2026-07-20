@@ -12,18 +12,20 @@ wheels = [
 ]
 
 [[package]]
-name = "box-com-downloader"
+name = "box-pdf-downloader"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "pyvirtualdisplay" },
     { name = "selenium" },
+    { name = "urllib3" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "pyvirtualdisplay", specifier = ">=3.0" },
     { name = "selenium", specifier = ">=4.46.0" },
+    { name = "urllib3", specifier = ">=2.0" },
 ]
 
 [[package]]
