@@ -18,10 +18,10 @@ import re
 import sys
 import time
 
-from easyprocess import EasyProcessCheckInstalledError
 from pyvirtualdisplay import Display
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 
 def url_checker(url):
@@ -57,13 +57,6 @@ class Scraper:
             if platform.system() == "Linux":
                 self.display = Display(visible=0, size=(800, 600))
                 self.display.start()  # start new virtual display
-            if platform.system() == "Darwin":  # for OSX which I am using
-                try:
-                    self.display = Display(visible=0, size=(800, 600))
-                    self.display.start()  # start new virtual display
-                except EasyProcessCheckInstalledError:
-                    print("Install XQuartz from here http://xQuartz.org and try again")
-                    sys.exit(-1)
         else:
             # hide chrome session
             chrome_options.add_argument("--headless")
@@ -71,9 +64,13 @@ class Scraper:
 
         self.wait_load_time = wait_time
         self.use_x11 = use_x11
-        self.driver_location = driver_location or "/usr/local/bin/chromedriver"
+        self.driver_location = driver_location
         self.url = url
-        self.driver_obj = webdriver.Chrome(self.driver_location, chrome_options=chrome_options)
+        if self.driver_location:
+            self.driver_obj = webdriver.Chrome(service=Service(self.driver_location), options=chrome_options)
+        else:
+            # let Selenium Manager find/download a matching chromedriver
+            self.driver_obj = webdriver.Chrome(options=chrome_options)
 
     def load_url(self):
         """
