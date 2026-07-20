@@ -49,7 +49,7 @@ def main():
     print("DATA TO BE DOWNLOADED\nTitle: {}\nBox.com URL: {}".format(dl_name, args.url))
 
     print(style)
-    dl_url = box_object.get_download_url()
+    dl_url, dl_auth = box_object.get_download_url()
     print("Download URL:", dl_url)
     print(style)
     box_object.clean()  # clean
@@ -60,7 +60,7 @@ def main():
         os.makedirs(directory)
     print("Downloading..\nFile will be save as:",
           str(args.output_location + dl_name + ".pdf"))
-    download_file(url=dl_url, path=str(args.output_location + dl_name + ".pdf"))
+    download_file(url=dl_url, path=str(args.output_location + dl_name + ".pdf"), auth=dl_auth)
 
 
 if __name__ == "__main__":

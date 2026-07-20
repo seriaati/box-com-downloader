@@ -13,6 +13,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
+import json
 import platform
 import re
 import sys
@@ -62,6 +63,9 @@ class Scraper:
             chrome_options.add_argument("--headless")
             chrome_options.add_argument("--window-size=1280x800")
 
+        # capture network requests (incl. auth headers) via chrome's performance log
+        chrome_options.set_capability("goog:loggingPrefs", {"performance": "ALL"})
+
         self.wait_load_time = wait_time
         self.use_x11 = use_x11
         self.driver_location = driver_location
@@ -95,18 +99,34 @@ class Scraper:
     def get_download_url(self):
         """
         This parses box.com url into PDF downloadable file
-        :rtype string
-        :returns box.com download_url else return None
+        :rtype tuple
+        :returns (download_url, authorization header) else (None, None)
         """
         driver = self.driver_obj  # get driver
-        # Load network requests
-        network_requests = list(driver.execute_script("return window.performance.getEntries();"))
         download_url = None  # default or error
-        for i in network_requests:
-            # this will scrap the pdf file in the word
-            if ("internal_files" in i["name"]) and ("pdf" in i["name"]):  # check for a pdf file
-                download_url = i["name"]
-        return download_url
+        auth_header = None
+        # box.com now serves the file via an authenticated /api/2.0/files/<id>/content
+        # request, so scrape url + Authorization header from chrome's performance log
+        events = [json.loads(entry["message"])["message"] for entry in driver.get_log("performance")]
+        request_ids = set()
+        for message in events:
+            if message["method"] != "Network.requestWillBeSent":
+                continue
+            request = message["params"]["request"]
+            if ("/api/2.0/files/" in request["url"]) and ("/content" in request["url"]):
+                download_url = request["url"]
+                request_ids.add(message["params"]["requestId"])
+                auth_header = request["headers"].get("Authorization", auth_header)
+        # full headers (incl. Authorization) are often only on the ExtraInfo
+        # event, which has no url and must be matched by requestId
+        for message in events:
+            if message["method"] != "Network.requestWillBeSentExtraInfo":
+                continue
+            if message["params"].get("requestId") not in request_ids:
+                continue
+            headers = message["params"]["headers"]
+            auth_header = headers.get("Authorization") or headers.get("authorization") or auth_header
+        return download_url, auth_header
 
     def clean(self):
         """
