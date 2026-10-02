@@ -15,7 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import argparse
 import os
+import shutil
 
+from .dash import download_dash
 from .downloader import download_file
 from .scraper import Scraper, url_checker
 
@@ -58,9 +60,16 @@ def main():
     directory = os.path.dirname(args.output_location)
     if not os.path.exists(directory):
         os.makedirs(directory)
-    print("Downloading..\nFile will be save as:",
-          str(args.output_location + dl_name + ".pdf"))
-    download_file(url=dl_url, path=str(args.output_location + dl_name + ".pdf"), auth=dl_auth)
+    if "manifest.mpd" in dl_url:  # video, streamed as DASH
+        if shutil.which("ffmpeg") is None:
+            raise SystemExit("ffmpeg is required to download videos, please install it")
+        path = str(args.output_location + dl_name + ".mp4")
+        print("Downloading..\nFile will be save as:", path)
+        download_dash(manifest_url=dl_url, path=path, auth=dl_auth)
+    else:
+        print("Downloading..\nFile will be save as:",
+              str(args.output_location + dl_name + ".pdf"))
+        download_file(url=dl_url, path=str(args.output_location + dl_name + ".pdf"), auth=dl_auth)
 
 
 if __name__ == "__main__":

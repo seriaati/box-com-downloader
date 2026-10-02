@@ -98,7 +98,7 @@ class Scraper:
 
     def get_download_url(self):
         """
-        This parses box.com url into PDF downloadable file
+        This parses box.com url into PDF downloadable file, or a DASH manifest for videos
         :rtype tuple
         :returns (download_url, authorization header) else (None, None)
         """
@@ -113,7 +113,9 @@ class Scraper:
             if message["method"] != "Network.requestWillBeSent":
                 continue
             request = message["params"]["request"]
-            if ("/api/2.0/files/" in request["url"]) and ("/content" in request["url"]):
+            # videos are streamed via a DASH manifest instead of /content
+            if (("/api/2.0/files/" in request["url"]) and ("/content" in request["url"])) \
+                    or ("/representations/dash/content/manifest.mpd" in request["url"]):
                 download_url = request["url"]
                 request_ids.add(message["params"]["requestId"])
                 auth_header = request["headers"].get("Authorization", auth_header)
