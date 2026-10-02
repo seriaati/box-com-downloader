@@ -1,5 +1,6 @@
 # Box.com Downloader
 # Copyright (C) 2018 lfasmpao
+# Copyright (C) 2026 seriaati
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
