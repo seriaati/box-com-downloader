@@ -22,12 +22,12 @@ from urllib3.exceptions import InsecureRequestWarning
 def download_file(url, path, auth=None):
     r = None
     http = urllib3.PoolManager()
-    headers = {'Authorization': auth} if auth else None
+    headers = {"Authorization": auth} if auth else None
     try:
-        r = http.request('GET', url, headers=headers, preload_content=False)
+        r = http.request("GET", url, headers=headers, preload_content=False)
     except InsecureRequestWarning:
         pass
-    with open(path, 'wb') as out:
+    with open(path, "wb") as out:
         while True:
             data = r.read(1024)
             if not data:

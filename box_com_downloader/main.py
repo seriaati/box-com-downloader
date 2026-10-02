@@ -24,24 +24,50 @@ from .downloader import download_file
 from .scraper import Scraper, url_checker
 
 # globals
-parser = argparse.ArgumentParser(usage='%(prog)s [options]')
-parser.add_argument('url', metavar='URL', type=str, help="Input box.com shared url")
-parser.add_argument('--driver-path', default=None, dest='driver_location',
-                    type=str, help="Specify your chrome driver path")
-parser.add_argument('--wait-time', default=15, dest='wait_time',
-                    type=int, help="Wait time for selenium to load in seconds (default: 15)")
-parser.add_argument('--use-x11', default=False, action='store_false', dest='use_x11',
-                    help='Use X11 Virtual Display (For OSX/Linux Only)')
-parser.add_argument('--version', action='version', version='Box.com Downloader Version ' + version('box-com-downloader'))
-parser.add_argument('--out', default=os.getcwd() + "/dl_files/",
-                    dest="output_location", type=str, help="Output file folder location")
+parser = argparse.ArgumentParser(usage="%(prog)s [options]")
+parser.add_argument("url", metavar="URL", type=str, help="Input box.com shared url")
+parser.add_argument(
+    "--driver-path",
+    default=None,
+    dest="driver_location",
+    type=str,
+    help="Specify your chrome driver path",
+)
+parser.add_argument(
+    "--wait-time",
+    default=15,
+    dest="wait_time",
+    type=int,
+    help="Wait time for selenium to load in seconds (default: 15)",
+)
+parser.add_argument(
+    "--use-x11",
+    default=False,
+    action="store_false",
+    dest="use_x11",
+    help="Use X11 Virtual Display (For OSX/Linux Only)",
+)
+parser.add_argument(
+    "--version",
+    action="version",
+    version="Box.com Downloader Version " + version("box-com-downloader"),
+)
+parser.add_argument(
+    "--out",
+    default=os.getcwd() + "/dl_files/",
+    dest="output_location",
+    type=str,
+    help="Output file folder location",
+)
 
 
 def main():
     args = parser.parse_args()
     style = "=+" * 20
     if url_checker(args.url) is False:  # url format check
-        raise argparse.ArgumentTypeError('Value has to be in full url format http:// or http://')
+        raise argparse.ArgumentTypeError(
+            "Value has to be in full url format http:// or http://"
+        )
     print(style)
     print("Box.com Downloader by @seriaati (originally by @lfasmpao)")
 
@@ -69,9 +95,13 @@ def main():
         print("Downloading..\nFile will be save as:", path)
         download_dash(manifest_url=dl_url, path=path, auth=dl_auth)
     else:
-        print("Downloading..\nFile will be save as:",
-              str(args.output_location + dl_name + ".pdf"))
-        download_file(url=dl_url, path=str(args.output_location + dl_name + ".pdf"), auth=dl_auth)
+        print(
+            "Downloading..\nFile will be save as:",
+            str(args.output_location + dl_name + ".pdf"),
+        )
+        download_file(
+            url=dl_url, path=str(args.output_location + dl_name + ".pdf"), auth=dl_auth
+        )
 
 
 if __name__ == "__main__":

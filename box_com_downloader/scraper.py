@@ -28,18 +28,20 @@ from selenium.webdriver.chrome.service import Service
 
 def url_checker(url):
     """
-       This checks the url format
-       :param url Unified Resource Locator
-       :rtype: bool
-       :return boolean
+    This checks the url format
+    :param url Unified Resource Locator
+    :rtype: bool
+    :return boolean
     """
     url_check_regex = re.compile(
-        r'^(?:http|ftp)s?://'  # http:// or https://
-        r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|'  # domain...
-        r'localhost|'  # localhost
-        r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'  # ...or ip
-        r'(?::\d+)?'  # port
-        r'(?:/?|[/?]\S+)$', re.IGNORECASE)  # url check regex
+        r"^(?:http|ftp)s?://"  # http:// or https://
+        r"(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?)|"  # domain...
+        r"localhost|"  # localhost
+        r"\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})"  # ...or ip
+        r"(?::\d+)?"  # port
+        r"(?:/?|[/?]\S+)$",
+        re.IGNORECASE,
+    )  # url check regex
     if re.match(url_check_regex, url) is not None:
         return "box.com" in url  # really?
 
@@ -72,7 +74,9 @@ class Scraper:
         self.driver_location = driver_location
         self.url = url
         if self.driver_location:
-            self.driver_obj = webdriver.Chrome(service=Service(self.driver_location), options=chrome_options)
+            self.driver_obj = webdriver.Chrome(
+                service=Service(self.driver_location), options=chrome_options
+            )
         else:
             # let Selenium Manager find/download a matching chromedriver
             self.driver_obj = webdriver.Chrome(options=chrome_options)
@@ -85,7 +89,9 @@ class Scraper:
         url = self.url
         driver.get(url)  # load selenium
         # TODO: This is a bad, maybe we should change this to selenium WebDriverWait
-        time.sleep(self.wait_load_time)  # wait load time, implicit wait doesnt work well?
+        time.sleep(
+            self.wait_load_time
+        )  # wait load time, implicit wait doesnt work well?
 
     def get_download_title(self):
         """
@@ -108,7 +114,10 @@ class Scraper:
         auth_header = None
         # box.com now serves the file via an authenticated /api/2.0/files/<id>/content
         # request, so scrape url + Authorization header from chrome's performance log
-        events = [json.loads(entry["message"])["message"] for entry in driver.get_log("performance")]
+        events = [
+            json.loads(entry["message"])["message"]
+            for entry in driver.get_log("performance")
+        ]
         request_ids = set()
         for message in events:
             if message["method"] != "Network.requestWillBeSent":
@@ -116,9 +125,14 @@ class Scraper:
             request = message["params"]["request"]
             # non-pdf documents (e.g. docx) are previewed via a generated pdf representation,
             # videos are streamed via a DASH manifest instead of /content
-            if (("/api/2.0/files/" in request["url"]) and ("/content" in request["url"])) \
-                    or ("/representations/pdf/content/" in request["url"]) \
-                    or ("/representations/dash/content/manifest.mpd" in request["url"]):
+            if (
+                (
+                    ("/api/2.0/files/" in request["url"])
+                    and ("/content" in request["url"])
+                )
+                or ("/representations/pdf/content/" in request["url"])
+                or ("/representations/dash/content/manifest.mpd" in request["url"])
+            ):
                 download_url = request["url"]
                 request_ids.add(message["params"]["requestId"])
                 auth_header = request["headers"].get("Authorization", auth_header)
@@ -130,7 +144,11 @@ class Scraper:
             if message["params"].get("requestId") not in request_ids:
                 continue
             headers = message["params"]["headers"]
-            auth_header = headers.get("Authorization") or headers.get("authorization") or auth_header
+            auth_header = (
+                headers.get("Authorization")
+                or headers.get("authorization")
+                or auth_header
+            )
         return download_url, auth_header
 
     def clean(self):
