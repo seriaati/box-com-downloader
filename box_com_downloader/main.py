@@ -43,7 +43,7 @@ def main():
     if url_checker(args.url) is False:  # url format check
         raise argparse.ArgumentTypeError('Value has to be in full url format http:// or http://')
     print(style)
-    print("Box.com Downloader by @lfasmpao")
+    print("Box.com Downloader by @seriaati (originally by @lfasmpao)")
 
     box_object = Scraper(args.url, args.driver_location, args.use_x11, args.wait_time)
     print("Please wait for about {} seconds...".format(args.wait_time))
