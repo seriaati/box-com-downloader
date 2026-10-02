@@ -1,4 +1,4 @@
-# Box.com PDF Downloader
+# Box.com Downloader
 # Copyright (C) 2018 lfasmpao
 #
 # This program is free software: you can redistribute it and/or modify

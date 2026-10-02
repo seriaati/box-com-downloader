@@ -1,4 +1,4 @@
-# Box.com PDF Downloader
+# Box.com Downloader
 # Copyright (C) 2018 lfasmpao
 #
 # This program is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ parser.add_argument('--wait-time', default=15, dest='wait_time',
                     type=int, help="Wait time for selenium to load in seconds (default: 15)")
 parser.add_argument('--use-x11', default=False, action='store_false', dest='use_x11',
                     help='Use X11 Virtual Display (For OSX/Linux Only)')
-parser.add_argument('--version', action='version', version='Box.com PDF Downloader Version 1.0')
+parser.add_argument('--version', action='version', version='Box.com Downloader Version 1.0')
 parser.add_argument('--out', default=os.getcwd() + "/dl_files/",
                     dest="output_location", type=str, help="Output file folder location")
 
@@ -41,7 +41,7 @@ def main():
     if url_checker(args.url) is False:  # url format check
         raise argparse.ArgumentTypeError('Value has to be in full url format http:// or http://')
     print(style)
-    print("Box.com PDF Downloader by @lfasmpao")
+    print("Box.com Downloader by @lfasmpao")
 
     box_object = Scraper(args.url, args.driver_location, args.use_x11, args.wait_time)
     print("Please wait for about {} seconds...".format(args.wait_time))
