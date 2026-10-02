@@ -113,8 +113,10 @@ class Scraper:
             if message["method"] != "Network.requestWillBeSent":
                 continue
             request = message["params"]["request"]
+            # non-pdf documents (e.g. docx) are previewed via a generated pdf representation,
             # videos are streamed via a DASH manifest instead of /content
             if (("/api/2.0/files/" in request["url"]) and ("/content" in request["url"])) \
+                    or ("/representations/pdf/content/" in request["url"]) \
                     or ("/representations/dash/content/manifest.mpd" in request["url"]):
                 download_url = request["url"]
                 request_ids.add(message["params"]["requestId"])
