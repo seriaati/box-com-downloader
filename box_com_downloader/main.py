@@ -16,6 +16,7 @@
 import argparse
 import os
 import shutil
+from importlib.metadata import version
 
 from .dash import download_dash
 from .downloader import download_file
@@ -30,7 +31,7 @@ parser.add_argument('--wait-time', default=15, dest='wait_time',
                     type=int, help="Wait time for selenium to load in seconds (default: 15)")
 parser.add_argument('--use-x11', default=False, action='store_false', dest='use_x11',
                     help='Use X11 Virtual Display (For OSX/Linux Only)')
-parser.add_argument('--version', action='version', version='Box.com Downloader Version 1.0')
+parser.add_argument('--version', action='version', version='Box.com Downloader Version ' + version('box-com-downloader'))
 parser.add_argument('--out', default=os.getcwd() + "/dl_files/",
                     dest="output_location", type=str, help="Output file folder location")
 
